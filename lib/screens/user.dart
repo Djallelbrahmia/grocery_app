@@ -3,6 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/provider/dark_theme_provider.dart';
 import 'package:grocery_app/screens/home_screen.dart';
+import 'package:grocery_app/screens/orders/order_screen.dart';
+import 'package:grocery_app/screens/viewed/viewed_screen.dart';
+import 'package:grocery_app/screens/wishlist/wishlist_screen.dart';
+import 'package:grocery_app/services/global_methodes.dart';
 import 'package:provider/provider.dart';
 
 import '../widgets/text_wiget.dart';
@@ -82,12 +86,18 @@ class _UserScreenState extends State<UserScreen> {
                 _listTiles(
                     title: "Orders",
                     icon: IconlyBold.bag,
-                    onPressed: () {},
+                    onPressed: () {
+                      GlobalMethods.navigateTo(
+                          context: context, routName: OrderScreen.routeName);
+                    },
                     color: color),
                 _listTiles(
                     title: "Wishlist",
                     icon: IconlyBold.heart,
-                    onPressed: () {},
+                    onPressed: () {
+                      GlobalMethods.navigateTo(
+                          context: context, routName: WishlistScreen.routeName);
+                    },
                     color: color),
                 _listTiles(
                     title: "Forget Password",
@@ -97,7 +107,10 @@ class _UserScreenState extends State<UserScreen> {
                 _listTiles(
                     title: "Viewed Items",
                     icon: IconlyBold.show,
-                    onPressed: () {},
+                    onPressed: () {
+                      GlobalMethods.navigateTo(
+                          context: context, routName: ViewedSCreen.routeName);
+                    },
                     color: color),
                 SwitchListTile(
                     title: Text(
@@ -118,7 +131,11 @@ class _UserScreenState extends State<UserScreen> {
                     title: "Logout",
                     icon: IconlyBold.logout,
                     onPressed: () {
-                      _showLogoutDialog();
+                      GlobalMethods.WarningDialog(
+                          title: "Sign out ",
+                          subtitle: "Are you sure  you wanna sign out",
+                          fct: () {},
+                          context: context);
                     },
                     color: color),
               ]),
@@ -148,52 +165,6 @@ class _UserScreenState extends State<UserScreen> {
             controller: _adressController,
           ),
         );
-      },
-    );
-  }
-
-  Future<void> _showLogoutDialog() async {
-    await showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-            title: Row(
-              children: [
-                Image.asset(
-                  "assets/images/warning-sign.png",
-                  height: 24,
-                  width: 24,
-                  fit: BoxFit.fill,
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                const Text("Sign Out")
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  if (Navigator.canPop(context)) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const TextWidget(
-                  text: "Cancel",
-                  color: Colors.cyan,
-                  textsize: 20,
-                ),
-              ),
-              TextButton(
-                onPressed: () {},
-                child: const TextWidget(
-                  text: "Yes",
-                  color: Colors.red,
-                  textsize: 20,
-                ),
-              ),
-            ],
-            content: const Text("Do you wan't to sign ou "));
       },
     );
   }

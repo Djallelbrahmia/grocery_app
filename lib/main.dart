@@ -6,6 +6,9 @@ import 'package:grocery_app/inner_screens/product_screen.dart';
 import 'package:grocery_app/provider/dark_theme_provider.dart';
 import 'package:grocery_app/screens/btm_bar.dart';
 import 'package:grocery_app/screens/home_screen.dart';
+import 'package:grocery_app/screens/orders/order_screen.dart';
+import 'package:grocery_app/screens/viewed/viewed_screen.dart';
+import 'package:grocery_app/screens/wishlist/wishlist_screen.dart';
 import 'package:provider/provider.dart';
 import 'consts/theme_data.dart';
 
@@ -59,6 +62,9 @@ class _MyAppState extends State<MyApp> {
                 return const FeedsScreen();
               },
               ProductScreen.routeName: (context) => const ProductScreen(),
+              WishlistScreen.routeName: (context) => WishlistScreen(),
+              OrderScreen.routeName: (context) => const OrderScreen(),
+              ViewedSCreen.routeName: (context) => const ViewedSCreen(),
             });
       }),
     );

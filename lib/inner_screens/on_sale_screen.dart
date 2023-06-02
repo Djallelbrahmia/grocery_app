@@ -17,17 +17,7 @@ class OnsaleScreen extends StatelessWidget {
     final bool _isEmpty = false;
     return Scaffold(
       appBar: AppBar(
-        leading: InkWell(
-          borderRadius: BorderRadius.circular(12),
-          onTap: () {
-            Navigator.of(context).pop();
-          },
-          child: Icon(
-            IconlyLight.arrowLeft2,
-            color: utils.color,
-            size: 24,
-          ),
-        ),
+        leading: BackButton(),
         title: TextWidget(
           text: 'Product on sale',
           color: utils.color,

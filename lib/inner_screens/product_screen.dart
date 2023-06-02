@@ -36,16 +36,7 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          leading: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () =>
-                Navigator.canPop(context) ? Navigator.pop(context) : null,
-            child: Icon(
-              IconlyLight.arrowLeft2,
-              color: color,
-              size: 24,
-            ),
-          ),
+          leading: const BackButton(),
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor),
       body: Column(children: [

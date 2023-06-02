@@ -30,17 +30,7 @@ class _FeedsScreenState extends State<FeedsScreen> {
     final Utils utils = Utils(context);
     return Scaffold(
         appBar: AppBar(
-          leading: InkWell(
-            borderRadius: BorderRadius.circular(12),
-            onTap: () {
-              Navigator.of(context).pop();
-            },
-            child: Icon(
-              IconlyLight.arrowLeft2,
-              color: utils.color,
-              size: 24,
-            ),
-          ),
+          leading: BackButton(),
           centerTitle: true,
           title: TextWidget(
             text: 'All Product',

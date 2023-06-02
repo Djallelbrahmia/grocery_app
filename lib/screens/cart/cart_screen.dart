@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/screens/cart/cart_widget.dart';
+import 'package:grocery_app/widgets/empty_cart_screen.dart';
+import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 
 import '../../services/utils.dart';
@@ -11,47 +13,65 @@ class CartScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Utils utils = Utils(context);
+    bool _isEmpty = true;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: TextWidget(
-            text: "Cart(2)",
-            color: utils.color,
-            textsize: 22,
-            isTitle: true,
-          ),
-        ),
-        elevation: 0,
-        actions: [
-          IconButton(
-            onPressed: () {},
-            icon: const Icon(IconlyBroken.delete),
+    return _isEmpty
+        ? const EmptyCartScreen(
+            title: "Your card is empty",
+            subtitle: "add something and make me happy",
+            buttontext: "Shop now",
+            imagePath: 'assets/images/cart.png',
           )
-        ],
-      ),
-      body: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: utils.screenSize.height * 0.1,
-            child: Row(
-              children: [
-                _checkout(context: context),
+        : Scaffold(
+            appBar: AppBar(
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              title: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: TextWidget(
+                  text: "Cart(2)",
+                  color: utils.color,
+                  textsize: 22,
+                  isTitle: true,
+                ),
+              ),
+              elevation: 0,
+              actions: [
+                IconButton(
+                  onPressed: () {
+                    GlobalMethods.WarningDialog(
+                        title: "Delete",
+                        subtitle: "Are you sure you wanna empty your card",
+                        fct: () {},
+                        context: context);
+                  },
+                  icon: Icon(
+                    IconlyBroken.delete,
+                    color: utils.color,
+                  ),
+                )
               ],
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
-                itemCount: 10,
-                itemBuilder: (context, index) {
-                  return CartWidget();
-                }),
-          ),
-        ],
-      ),
-    );
+            body: Column(
+              children: [
+                Container(
+                  width: double.infinity,
+                  height: utils.screenSize.height * 0.1,
+                  child: Row(
+                    children: [
+                      _checkout(context: context),
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: ListView.builder(
+                      itemCount: 10,
+                      itemBuilder: (context, index) {
+                        return CartWidget();
+                      }),
+                ),
+              ],
+            ),
+          );
   }
 
   Widget _checkout({required context}) {
