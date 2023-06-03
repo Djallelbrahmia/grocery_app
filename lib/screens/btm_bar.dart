@@ -5,7 +5,9 @@ import 'package:grocery_app/screens/home_screen.dart';
 import 'package:grocery_app/screens/user.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
+import 'package:badges/badges.dart' as badge;
 
+import '../widgets/text_wiget.dart';
 import 'cart/cart_screen.dart';
 
 class BottomBarScreen extends StatefulWidget {
@@ -57,14 +59,24 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                     : const Icon(IconlyLight.category),
                 label: 'Categories'),
             BottomNavigationBarItem(
-                icon: _selectedIndex == 2
-                    ? const Icon(IconlyBold.buy)
-                    : const Icon(IconlyLight.buy),
+                icon: badge.Badge(
+                  badgeAnimation: const badge.BadgeAnimation.slide(),
+                  badgeStyle: badge.BadgeStyle(
+                    shape: badge.BadgeShape.circle,
+                    badgeColor: Colors.blue,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  position: badge.BadgePosition.topEnd(top: -7, end: -7),
+                  badgeContent: FittedBox(
+                      child: TextWidget(
+                          text: "1", color: Colors.white, textsize: 15)),
+                  child: Icon(
+                      _selectedIndex == 2 ? IconlyBold.buy : IconlyLight.buy),
+                ),
                 label: 'Cart'),
             BottomNavigationBarItem(
-                icon: _selectedIndex == 3
-                    ? const Icon(IconlyBold.user2)
-                    : const Icon(IconlyLight.user2),
+                icon: Icon(
+                    _selectedIndex == 3 ? IconlyBold.user2 : IconlyLight.user2),
                 label: 'User')
           ]),
     );

@@ -10,16 +10,11 @@ import 'package:grocery_app/widgets/on_sale_widget.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
+import '../consts/consts.dart';
 import '../services/utils.dart';
 
 class HomeScreen extends StatelessWidget {
   HomeScreen({super.key});
-  final List<String> _offerImages = [
-    'assets/images/offres/Offer1.jpg',
-    'assets/images/offres/Offer2.jpg',
-    'assets/images/offres/Offer3.jpg',
-    'assets/images/offres/Offer4.jpg'
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -33,7 +28,7 @@ class HomeScreen extends StatelessWidget {
               child: Swiper(
                 itemBuilder: (BuildContext context, int index) {
                   return Image.asset(
-                    _offerImages[index],
+                    Consts.offerImages[index],
                     fit: BoxFit.fill,
                   );
                 },
