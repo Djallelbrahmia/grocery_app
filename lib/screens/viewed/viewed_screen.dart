@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/screens/viewed/viewed_widget.dart';
 import 'package:grocery_app/services/utils.dart';
+import 'package:grocery_app/widgets/back_widget.dart';
 
 import '../../services/global_methodes.dart';
 import '../../widgets/empty_cart_screen.dart';
@@ -31,17 +32,7 @@ class _ViewedSCreenState extends State<ViewedSCreen> {
         : Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              leading: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Icon(
-                  IconlyLight.arrowLeft2,
-                  color: utils.color,
-                  size: 24,
-                ),
-              ),
+              leading: BackWidget(),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Padding(
                 padding: const EdgeInsets.all(8.0),

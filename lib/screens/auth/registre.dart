@@ -2,7 +2,7 @@ import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:grocery_app/screens/auth/forget_pass.dart';
-import 'package:grocery_app/screens/auth/registre.dart';
+import 'package:grocery_app/screens/auth/login.dart';
 import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 
@@ -10,29 +10,37 @@ import '../../consts/consts.dart';
 import 'Google_auth_button.dart';
 import 'auth_button.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
-  static const routeName = "/LoginScreen";
+class RegistreScreen extends StatefulWidget {
+  const RegistreScreen({super.key});
+  static const routeName = "/RegistreScreen";
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegistreScreen> createState() => _RegistreScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegistreScreenState extends State<RegistreScreen> {
+  final _adressTextController = TextEditingController();
+  final _adressFocusNode = FocusNode();
+  final _nameTextController = TextEditingController();
   final _emailTextController = TextEditingController();
   final _passTextController = TextEditingController();
   final _passFocusNode = FocusNode();
+  final _emailFocusNode = FocusNode();
   final _formKey = GlobalKey<FormState>();
   bool _obsecureText = true;
   @override
   void dispose() {
+    _adressTextController.dispose();
+    _adressFocusNode.dispose();
+    _nameTextController.dispose();
     _emailTextController.dispose();
     _passTextController.dispose();
     _passFocusNode.dispose();
+    _emailFocusNode.dispose();
     super.dispose();
   }
 
-  void _submitFormOnLogin() {
+  void _submitFormOnRegistre() {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
     if (isValid) {
@@ -84,7 +92,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     height: 8,
                   ),
                   const TextWidget(
-                      text: "Sing in to continue",
+                      text: "Sing up to continue",
                       color: Colors.white,
                       textsize: 18),
                   const SizedBox(
@@ -98,8 +106,70 @@ class _LoginScreenState extends State<LoginScreen> {
                             textInputAction: TextInputAction.next,
                             onEditingComplete: () {
                               FocusScope.of(context)
+                                  .requestFocus(_adressFocusNode);
+                            },
+                            controller: _nameTextController,
+                            keyboardType: TextInputType.name,
+                            validator: (value) {
+                              if (value!.isEmpty) {
+                                return 'Please enter a valid Name';
+                              } else {
+                                return null;
+                              }
+                            },
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              hintText: 'name',
+                              hintStyle: TextStyle(color: Colors.white),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                            ),
+                          ), //password
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () {
+                              FocusScope.of(context)
+                                  .requestFocus(_emailFocusNode);
+                            },
+                            controller: _adressTextController,
+                            keyboardType: TextInputType.streetAddress,
+                            validator: (value) {
+                              if (value!.isEmpty || value.length < 10) {
+                                return 'Please enter a valid adress';
+                              } else {
+                                return null;
+                              }
+                            },
+                            focusNode: _adressFocusNode,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              hintText: 'Shopping adress',
+                              hintStyle: TextStyle(color: Colors.white),
+                              enabledBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                              focusedBorder: UnderlineInputBorder(
+                                borderSide: BorderSide(color: Colors.white),
+                              ),
+                            ),
+                          ), //password
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          TextFormField(
+                            textInputAction: TextInputAction.next,
+                            onEditingComplete: () {
+                              FocusScope.of(context)
                                   .requestFocus(_passFocusNode);
                             },
+                            focusNode: _emailFocusNode,
                             controller: _emailTextController,
                             keyboardType: TextInputType.emailAddress,
                             validator: (value) {
@@ -127,7 +197,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           TextFormField(
                             textInputAction: TextInputAction.done,
                             onEditingComplete: () {
-                              _submitFormOnLogin();
+                              _submitFormOnRegistre();
                             },
                             controller: _passTextController,
                             focusNode: _passFocusNode,
@@ -165,7 +235,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(
                             height: 12,
                           ),
-
                           Align(
                             alignment: Alignment.bottomRight,
                             child: TextButton(
@@ -183,21 +252,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                         fontStyle: FontStyle.italic))),
                           ),
                           const SizedBox(
-                            height: 10,
+                            height: 12,
                           ),
                           SizedBox(
                             width: double.infinity,
                             child: AuthButton(
                               fct: () {
-                                _submitFormOnLogin();
+                                _submitFormOnRegistre();
                               },
-                              buttonText: "Login",
+                              buttonText: "Sign Up",
                             ),
                           ),
                           const SizedBox(height: 12),
                           const SizedBox(
                             width: double.infinity,
-                            child: GoogleButton(),
+                            child: GoogleButton(
+                              buttonText: "Sign Up with google",
+                            ),
                           ),
                           const SizedBox(
                             height: 12,
@@ -228,22 +299,15 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ],
                           ),
-                          SizedBox(
-                            width: double.infinity,
-                            child: AuthButton(
-                              fct: () {},
-                              buttonText: "Continue as guest ",
-                              primary: Colors.black38,
-                            ),
-                          ),
+
                           RichText(
                               text: TextSpan(
-                                  text: 'Don\'t have an account?',
+                                  text: 'you already have an account ?',
                                   style: const TextStyle(
                                       color: Colors.white, fontSize: 18),
                                   children: [
                                 TextSpan(
-                                    text: '  Sign up',
+                                    text: '  Sign in',
                                     style: const TextStyle(
                                         color: Colors.lightBlue,
                                         fontSize: 18,
@@ -252,7 +316,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                       ..onTap = () {
                                         GlobalMethods.navigateTo(
                                             context: context,
-                                            routName: RegistreScreen.routeName);
+                                            routName: LoginScreen.routeName);
                                       }),
                               ]))
                         ],

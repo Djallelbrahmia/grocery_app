@@ -4,7 +4,9 @@ import 'package:grocery_app/inner_screens/feed_screen.dart';
 import 'package:grocery_app/inner_screens/on_sale_screen.dart';
 import 'package:grocery_app/inner_screens/product_screen.dart';
 import 'package:grocery_app/provider/dark_theme_provider.dart';
+import 'package:grocery_app/screens/auth/forget_pass.dart';
 import 'package:grocery_app/screens/auth/login.dart';
+import 'package:grocery_app/screens/auth/registre.dart';
 import 'package:grocery_app/screens/btm_bar.dart';
 import 'package:grocery_app/screens/home_screen.dart';
 import 'package:grocery_app/screens/orders/order_screen.dart';
@@ -54,7 +56,7 @@ class _MyAppState extends State<MyApp> {
             debugShowCheckedModeBanner: false,
             title: 'Flutter Demo',
             theme: Styles.themeData(themeChangeProvider.getDarkTheme, context),
-            home: const LoginScreen(),
+            home: const BottomBarScreen(),
             routes: {
               OnsaleScreen.routeName: (context) {
                 return const OnsaleScreen();
@@ -66,6 +68,10 @@ class _MyAppState extends State<MyApp> {
               WishlistScreen.routeName: (context) => WishlistScreen(),
               OrderScreen.routeName: (context) => const OrderScreen(),
               ViewedSCreen.routeName: (context) => const ViewedSCreen(),
+              LoginScreen.routeName: (context) => const LoginScreen(),
+              RegistreScreen.routeName: (context) => const RegistreScreen(),
+              ForgetPasswordScreen.routeName: (context) =>
+                  const ForgetPasswordScreen(),
             });
       }),
     );

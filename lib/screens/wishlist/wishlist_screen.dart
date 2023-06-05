@@ -3,6 +3,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:grocery_app/screens/cart/cart_widget.dart';
 import 'package:grocery_app/screens/wishlist/wishlist_widget.dart';
+import 'package:grocery_app/widgets/back_widget.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 
 import '../../services/global_methodes.dart';
@@ -27,17 +28,7 @@ class WishlistScreen extends StatelessWidget {
         : Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              leading: InkWell(
-                borderRadius: BorderRadius.circular(12),
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                child: Icon(
-                  IconlyLight.arrowLeft2,
-                  color: utils.color,
-                  size: 24,
-                ),
-              ),
+              leading: BackWidget(),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Padding(
                 padding: const EdgeInsets.all(8.0),

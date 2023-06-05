@@ -4,6 +4,7 @@ import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 
 import '../services/utils.dart';
+import '../widgets/back_widget.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
 
@@ -17,7 +18,8 @@ class OnsaleScreen extends StatelessWidget {
     final bool _isEmpty = false;
     return Scaffold(
       appBar: AppBar(
-        leading: BackButton(),
+        leading: const BackWidget(),
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: TextWidget(
           text: 'Product on sale',
           color: utils.color,

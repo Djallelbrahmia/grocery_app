@@ -138,7 +138,7 @@ class _FeedWidgetState extends State<FeedWidget> {
               ),
               style: ButtonStyle(
                 backgroundColor:
-                    MaterialStateProperty.all(Theme.of(context).cardColor),
+                    MaterialStateProperty.all(Theme.of(context).canvasColor),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                   RoundedRectangleBorder(

@@ -8,6 +8,7 @@ import 'package:grocery_app/widgets/quantity_controller_widget.dart';
 import 'package:provider/provider.dart';
 
 import '../services/utils.dart';
+import '../widgets/back_widget.dart';
 import '../widgets/text_wiget.dart';
 
 class ProductScreen extends StatefulWidget {
@@ -36,7 +37,7 @@ class _ProductScreenState extends State<ProductScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          leading: const BackButton(),
+          leading: const BackWidget(),
           elevation: 0,
           backgroundColor: Theme.of(context).scaffoldBackgroundColor),
       body: Column(children: [

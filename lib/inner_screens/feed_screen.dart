@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 
 import '../services/utils.dart';
+import '../widgets/back_widget.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
 import '../widgets/text_wiget.dart';
@@ -30,7 +31,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
     final Utils utils = Utils(context);
     return Scaffold(
         appBar: AppBar(
-          leading: BackButton(),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          leading: BackWidget(),
           centerTitle: true,
           title: TextWidget(
             text: 'All Product',

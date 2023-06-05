@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 
 class GoogleButton extends StatelessWidget {
-  const GoogleButton({super.key});
+  const GoogleButton({super.key, this.buttonText = "Sign in with google"});
+  final String buttonText;
 
   @override
   Widget build(BuildContext context) {
@@ -17,30 +18,10 @@ class GoogleButton extends StatelessWidget {
                 color: Colors.white,
                 child: Image.asset(width: 40, 'assets/images/google.png')),
             const SizedBox(width: 8),
-            const TextWidget(
-                text: "Sing in with google", color: Colors.white, textsize: 18),
+            TextWidget(text: buttonText, color: Colors.white, textsize: 18),
             const SizedBox(
               height: 12,
             ),
-            Row(
-              children: [
-                Divider(
-                  color: Colors.white,
-                  thickness: 2,
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                TextWidget(text: "OR", color: Colors.white, textsize: 18),
-                SizedBox(
-                  width: 5,
-                ),
-                Divider(
-                  color: Colors.black,
-                  thickness: 2,
-                ),
-              ],
-            )
           ],
         ),
       ),
