@@ -10,7 +10,9 @@ import 'package:grocery_app/widgets/on_sale_widget.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
+import '../Prodivers/product_provider.dart';
 import '../consts/consts.dart';
+import '../models/product_model.dart';
 import '../services/utils.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -19,6 +21,9 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Utils utils = Utils(context);
+    final productProvider = Provider.of<ProductProvider>(context);
+    List<ProductModel> onSaleProducts = productProvider.getOnsaleProduct;
+    List<ProductModel> allProdcuts = productProvider.getProduct;
     return Scaffold(
       body: SingleChildScrollView(
         child: Column(
@@ -85,9 +90,13 @@ class HomeScreen extends StatelessWidget {
                     height: utils.screenSize.height * 0.24,
                     child: ListView.builder(
                       itemBuilder: ((context, index) {
-                        return OnSaleWidget();
+                        return ChangeNotifierProvider.value(
+                            value: onSaleProducts[index],
+                            child: const OnSaleWidget());
                       }),
-                      itemCount: 10,
+                      itemCount: onSaleProducts.length < 10
+                          ? onSaleProducts.length
+                          : 10,
                       scrollDirection: Axis.horizontal,
                     ),
                   ),
@@ -121,20 +130,23 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 8,
             ),
             GridView.count(
-                physics: NeverScrollableScrollPhysics(),
+                physics: const NeverScrollableScrollPhysics(),
                 shrinkWrap: true,
                 crossAxisCount: 2,
                 childAspectRatio:
                     utils.screenSize.width * 1.5 / utils.screenSize.height,
-                children: List.generate(4, (index) {
+                children: List.generate(
+                    allProdcuts.length < 4 ? allProdcuts.length : 4, (index) {
                   return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 0, horizontal: 2),
-                      child: FeedWidget());
+                      child: ChangeNotifierProvider.value(
+                          value: allProdcuts[index],
+                          child: const FeedWidget()));
                 }))
           ],
         ),

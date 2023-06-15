@@ -7,6 +7,8 @@ import 'package:grocery_app/widgets/heart_btn.dart';
 import 'package:grocery_app/widgets/quantity_controller_widget.dart';
 import 'package:provider/provider.dart';
 
+import '../Prodivers/cart_prodiver.dart';
+import '../Prodivers/product_provider.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/text_wiget.dart';
@@ -34,6 +36,16 @@ class _ProductScreenState extends State<ProductScreen> {
   Widget build(BuildContext context) {
     Size size = Utils(context).screenSize;
     final Color color = Utils(context).color;
+    final productProvider = Provider.of<ProductProvider>(context);
+    final productId = ModalRoute.of(context)!.settings.arguments as String;
+    final getCurrentProduct = productProvider.findById(productId);
+    final cartProvider = Provider.of<CartProvider>(context);
+
+    double usedPrice = getCurrentProduct.isOnSale
+        ? getCurrentProduct.salePrice
+        : getCurrentProduct.price;
+    double total = usedPrice * int.parse(_quantityTextController.text);
+
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
@@ -44,8 +56,7 @@ class _ProductScreenState extends State<ProductScreen> {
         Flexible(
           flex: 2,
           child: FancyShimmerImage(
-            imageUrl:
-                "https://www.aprifel.com/wp-content/uploads/2019/02/abricot.jpg",
+            imageUrl: getCurrentProduct.imageUrl,
             boxFit: BoxFit.scaleDown,
             width: size.width,
             // height: screenHeight * .4,
@@ -71,7 +82,7 @@ class _ProductScreenState extends State<ProductScreen> {
                     children: [
                       Flexible(
                         child: TextWidget(
-                          text: "Product Name",
+                          text: getCurrentProduct.title,
                           color: color,
                           textsize: 25,
                           isTitle: true,
@@ -88,7 +99,8 @@ class _ProductScreenState extends State<ProductScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       TextWidget(
-                        text: '\$9.99',
+                        text:
+                            '${usedPrice}/ ${getCurrentProduct.isPiece ? "Piece" : "Kg"} ',
                         color: Colors.green,
                         textsize: 22,
                         isTitle: true,
@@ -96,6 +108,15 @@ class _ProductScreenState extends State<ProductScreen> {
                       const SizedBox(
                         width: 10,
                       ),
+                      Visibility(
+                          visible: getCurrentProduct.isOnSale,
+                          child: Text(
+                            getCurrentProduct.price.toStringAsFixed(2),
+                            style: TextStyle(
+                                fontSize: 15,
+                                color: color,
+                                decoration: TextDecoration.lineThrough),
+                          )),
                       const Spacer(),
                       Container(
                         padding: const EdgeInsets.symmetric(
@@ -197,7 +218,7 @@ class _ProductScreenState extends State<ProductScreen> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             TextWidget(
-                              text: 'Total',
+                              text: "Total",
                               color: Colors.red.shade300,
                               textsize: 20,
                               isTitle: true,
@@ -209,13 +230,14 @@ class _ProductScreenState extends State<ProductScreen> {
                               child: Row(
                                 children: [
                                   TextWidget(
-                                    text: '\$9.99',
+                                    text: '\$${total.toStringAsFixed(2)}',
                                     color: color,
                                     textsize: 20,
                                     isTitle: true,
                                   ),
                                   TextWidget(
-                                    text: '${_quantityTextController.text}Kg',
+                                    text:
+                                        '/${_quantityTextController.text} ${getCurrentProduct.isPiece ? "Piece" : "Kg"} ',
                                     color: color,
                                     textsize: 16,
                                     isTitle: false,
@@ -233,12 +255,20 @@ class _ProductScreenState extends State<ProductScreen> {
                         child: Material(
                           color: Colors.green,
                           borderRadius: BorderRadius.circular(10),
-                          child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: TextWidget(
-                                  text: 'Add to cart',
-                                  color: Colors.white,
-                                  textsize: 18)),
+                          child: InkWell(
+                            onTap: () {
+                              cartProvider.addProductToCart(
+                                  productId: getCurrentProduct.id,
+                                  quantity:
+                                      int.parse(_quantityTextController.text));
+                            },
+                            child: const Padding(
+                                padding: EdgeInsets.all(12.0),
+                                child: TextWidget(
+                                    text: 'Add to cart',
+                                    color: Colors.white,
+                                    textsize: 18)),
+                          ),
                         ),
                       ),
                     ],

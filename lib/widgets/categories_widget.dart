@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:grocery_app/inner_screens/cat_screen.dart';
 import 'package:grocery_app/provider/dark_theme_provider.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +20,10 @@ class CategoriesWidget extends StatelessWidget {
     final Color color = themeData ? Colors.white : Colors.black;
     double _screenWidth = MediaQuery.of(context).size.width;
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Navigator.pushNamed(context, CategoryFeedsScreen.routeName,
+            arguments: catText);
+      },
       child: Container(
         decoration: BoxDecoration(
           color: passedColor.withOpacity(0.1),

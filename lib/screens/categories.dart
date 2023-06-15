@@ -45,7 +45,6 @@ class CategoriesScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final Utils utils = Utils(context);
     Color color = utils.color;
-    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -74,6 +73,5 @@ class CategoriesScreen extends StatelessWidget {
         ),
       ),
     );
-    ;
   }
 }

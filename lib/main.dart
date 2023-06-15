@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:grocery_app/Prodivers/cart_prodiver.dart';
+import 'package:grocery_app/Prodivers/product_provider.dart';
+import 'package:grocery_app/inner_screens/cat_screen.dart';
 import 'package:grocery_app/inner_screens/feed_screen.dart';
 import 'package:grocery_app/inner_screens/on_sale_screen.dart';
 import 'package:grocery_app/inner_screens/product_screen.dart';
@@ -8,6 +11,7 @@ import 'package:grocery_app/screens/auth/forget_pass.dart';
 import 'package:grocery_app/screens/auth/login.dart';
 import 'package:grocery_app/screens/auth/registre.dart';
 import 'package:grocery_app/screens/btm_bar.dart';
+import 'package:grocery_app/screens/categories.dart';
 import 'package:grocery_app/screens/home_screen.dart';
 import 'package:grocery_app/screens/orders/order_screen.dart';
 import 'package:grocery_app/screens/viewed/viewed_screen.dart';
@@ -48,6 +52,12 @@ class _MyAppState extends State<MyApp> {
       providers: [
         ChangeNotifierProvider(create: (_) {
           return themeChangeProvider;
+        }),
+        ChangeNotifierProvider(create: (_) {
+          return ProductProvider();
+        }),
+        ChangeNotifierProvider(create: (_) {
+          return CartProvider();
         })
       ],
       child: Consumer<DarkThemeProvider>(
@@ -72,6 +82,8 @@ class _MyAppState extends State<MyApp> {
               RegistreScreen.routeName: (context) => const RegistreScreen(),
               ForgetPasswordScreen.routeName: (context) =>
                   const ForgetPasswordScreen(),
+              CategoryFeedsScreen.routeName: (context) =>
+                  const CategoryFeedsScreen(),
             });
       }),
     );

@@ -202,7 +202,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           const SizedBox(
                             height: 12,
                           ),
-                          const Row(
+                          Row(
                             children: [
                               Expanded(
                                 child: Divider(

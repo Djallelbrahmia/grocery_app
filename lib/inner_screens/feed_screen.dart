@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/Prodivers/product_provider.dart';
+import 'package:grocery_app/models/product_model.dart';
+import 'package:provider/provider.dart';
 
+import '../consts/consts.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/feed_item_widget.dart';
@@ -29,6 +33,8 @@ class _FeedsScreenState extends State<FeedsScreen> {
   @override
   Widget build(BuildContext context) {
     final Utils utils = Utils(context);
+    final productProvider = Provider.of<ProductProvider>(context);
+    List<ProductModel> allProdcuts = productProvider.getProduct;
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -91,11 +97,14 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   shrinkWrap: true,
                   childAspectRatio:
                       utils.screenSize.width / (utils.screenSize.height * 0.59),
-                  children: List.generate(20, (index) {
+                  children: List.generate(allProdcuts.length, (index) {
                     return Padding(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 0, horizontal: 2),
-                        child: FeedWidget());
+                        padding:
+                            EdgeInsets.symmetric(vertical: 0, horizontal: 2),
+                        child: SizedBox(
+                          child: ChangeNotifierProvider.value(
+                              value: allProdcuts[index], child: FeedWidget()),
+                        ));
                   })),
             ],
           ),

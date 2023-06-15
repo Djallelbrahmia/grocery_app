@@ -2,9 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
+import 'package:provider/provider.dart';
 
+import '../Prodivers/product_provider.dart';
+import '../models/product_model.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
+import '../widgets/empty_prod.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
 
@@ -15,7 +19,8 @@ class OnsaleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final Utils utils = Utils(context);
-    final bool _isEmpty = false;
+    final productProvider = Provider.of<ProductProvider>(context);
+    List<ProductModel> onSaleProducts = productProvider.getOnsaleProduct;
     return Scaffold(
       appBar: AppBar(
         leading: const BackWidget(),
@@ -27,40 +32,21 @@ class OnsaleScreen extends StatelessWidget {
           isTitle: true,
         ),
       ),
-      body: _isEmpty
-          ? Center(
-              child: Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  children: [
-                    Image.asset("assets/images/box.png"),
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Text(
-                        'No Product on sale yet !,\nStay tuned',
-                        style: TextStyle(
-                          color: utils.color,
-                          fontSize: 24,
-                          fontWeight: FontWeight.w700,
-                        ),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            )
+      body: onSaleProducts.isEmpty
+          ? const EmptyProdWidget()
           : GridView.count(
               crossAxisCount: 2,
               childAspectRatio:
                   utils.screenSize.width * 2 / utils.screenSize.height,
               children: List.generate(
-                16,
+                onSaleProducts.length,
                 (index) {
                   return Padding(
                       padding: const EdgeInsets.symmetric(
                           vertical: 0, horizontal: 2),
-                      child: OnSaleWidget());
+                      child: ChangeNotifierProvider.value(
+                          value: onSaleProducts[index],
+                          child: const OnSaleWidget()));
                 },
               ),
             ),
