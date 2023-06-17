@@ -12,6 +12,7 @@ import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
 import '../../Prodivers/cart_prodiver.dart';
+import '../../Prodivers/wishlist_provider.dart';
 
 class CartWidget extends StatefulWidget {
   const CartWidget({super.key, required this.quantity});
@@ -47,7 +48,9 @@ class _CartWidgetState extends State<CartWidget> {
         ? getCurrentProduct.salePrice
         : getCurrentProduct.price;
     double total = usedPrice * int.parse(_quantityTextController.text);
-
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    bool? _isInWishlist =
+        wishlistProvider.getwishlistItems.containsKey(getCurrentProduct.id);
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, ProductScreen.routeName,
@@ -165,7 +168,10 @@ class _CartWidgetState extends State<CartWidget> {
                         children: [
                           InkWell(
                             onTap: () {},
-                            child: const HeartButton(),
+                            child: HeartButton(
+                              productId: getCurrentProduct.id,
+                              isWishlist: _isInWishlist,
+                            ),
                           ),
                           const SizedBox(
                             height: 4,

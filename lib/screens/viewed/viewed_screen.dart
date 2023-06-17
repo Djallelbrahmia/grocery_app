@@ -1,9 +1,11 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/Prodivers/viewd_product_provider.dart';
 import 'package:grocery_app/screens/viewed/viewed_widget.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/widgets/back_widget.dart';
+import 'package:provider/provider.dart';
 
 import '../../services/global_methodes.dart';
 import '../../widgets/empty_cart_screen.dart';
@@ -20,9 +22,11 @@ class ViewedSCreen extends StatefulWidget {
 class _ViewedSCreenState extends State<ViewedSCreen> {
   @override
   Widget build(BuildContext context) {
-    final bool _isEmpty = true;
+    final viewdProdProvider = Provider.of<ViewdProdProvider>(context);
+    final viewdListItems =
+        viewdProdProvider.getViewdItems.values.toList().reversed.toList();
     final Utils utils = Utils(context);
-    return _isEmpty
+    return viewdListItems.isEmpty
         ? const EmptyCartScreen(
             title: "Your history is empty",
             subtitle: "No items has been viewd recently",
@@ -32,7 +36,7 @@ class _ViewedSCreenState extends State<ViewedSCreen> {
         : Scaffold(
             appBar: AppBar(
               centerTitle: true,
-              leading: BackWidget(),
+              leading: const BackWidget(),
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -61,10 +65,11 @@ class _ViewedSCreenState extends State<ViewedSCreen> {
               ],
             ),
             body: ListView.separated(
-              itemCount: 10,
+              itemCount: viewdListItems.length,
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: ViewedWidget(),
+                child: ChangeNotifierProvider.value(
+                    value: viewdListItems[index], child: const ViewedWidget()),
               ),
               separatorBuilder: (context, index) => const Divider(),
             ),

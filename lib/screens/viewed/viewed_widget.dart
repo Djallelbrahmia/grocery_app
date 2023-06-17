@@ -1,15 +1,31 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:grocery_app/models/viewd_model.dart';
+import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/services/utils.dart';
-import 'package:grocery_app/widgets/quantity_controller_widget.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
+import 'package:provider/provider.dart';
+
+import '../../Prodivers/cart_prodiver.dart';
+import '../../Prodivers/product_provider.dart';
 
 class ViewedWidget extends StatelessWidget {
   const ViewedWidget({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final viewdProdModel = Provider.of<ViewProductdModel>(context);
+    final productProvider = Provider.of<ProductProvider>(context);
+    final getCurrentProduct =
+        productProvider.findById(viewdProdModel.productId);
+    final cartProvider = Provider.of<CartProvider>(context);
+    bool? _isInCart =
+        cartProvider.getCartItems.containsKey(getCurrentProduct.id);
+    double usedPrice = getCurrentProduct.isOnSale
+        ? getCurrentProduct.salePrice
+        : getCurrentProduct.price;
     final Utils utils = Utils(context);
     return ListTile(
       leading: Container(
@@ -20,18 +36,17 @@ class ViewedWidget extends StatelessWidget {
           height: utils.screenSize.width * 0.3,
           boxFit: BoxFit.fill,
           boxDecoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
-          imageUrl:
-              "https://www.aprifel.com/wp-content/uploads/2019/02/abricot.jpg",
+          imageUrl: getCurrentProduct.imageUrl,
         ),
       ),
       title: TextWidget(
-        text: "Title",
+        text: getCurrentProduct.title,
         color: utils.color,
         textsize: 18,
         isTitle: true,
       ),
       subtitle: TextWidget(
-        text: "subtitle",
+        text: "${usedPrice.toStringAsFixed(2)}\$",
         color: utils.color,
         textsize: 18,
         isTitle: false,
@@ -42,12 +57,17 @@ class ViewedWidget extends StatelessWidget {
           color: Colors.green,
           borderRadius: BorderRadius.circular(12),
           child: InkWell(
-            onTap: () {},
+            onTap: () {
+              _isInCart
+                  ? null
+                  : cartProvider.addProductToCart(
+                      productId: getCurrentProduct.id, quantity: 1);
+            },
             borderRadius: BorderRadius.circular(12),
             child: Padding(
               padding: const EdgeInsets.all(6),
               child: Icon(
-                CupertinoIcons.plus,
+                _isInCart ? Icons.check : IconlyBold.plus,
                 color: Colors.white,
               ),
             ),

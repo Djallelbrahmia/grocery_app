@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
 import 'package:grocery_app/Prodivers/product_provider.dart';
+import 'package:grocery_app/Prodivers/viewd_product_provider.dart';
+import 'package:grocery_app/Prodivers/wishlist_provider.dart';
 import 'package:grocery_app/inner_screens/cat_screen.dart';
 import 'package:grocery_app/inner_screens/feed_screen.dart';
 import 'package:grocery_app/inner_screens/on_sale_screen.dart';
@@ -58,6 +60,12 @@ class _MyAppState extends State<MyApp> {
         }),
         ChangeNotifierProvider(create: (_) {
           return CartProvider();
+        }),
+        ChangeNotifierProvider(create: (_) {
+          return WishlistProvider();
+        }),
+        ChangeNotifierProvider(create: (_) {
+          return ViewdProdProvider();
         })
       ],
       child: Consumer<DarkThemeProvider>(

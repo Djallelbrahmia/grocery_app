@@ -9,6 +9,7 @@ import 'package:grocery_app/widgets/price_widget.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
+import '../Prodivers/wishlist_provider.dart';
 import '../services/utils.dart';
 
 class FeedWidget extends StatefulWidget {
@@ -39,6 +40,11 @@ class _FeedWidgetState extends State<FeedWidget> {
     Color color = Utils(context).color;
     final productModel = Provider.of<ProductModel>(context);
     final cartProvider = Provider.of<CartProvider>(context);
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    bool? _isInWishlist =
+        wishlistProvider.getwishlistItems.containsKey(productModel.id);
+
+    bool? _isInCart = cartProvider.getCartItems.containsKey(productModel.id);
     return Padding(
       padding: const EdgeInsets.all(4),
       child: Material(
@@ -74,7 +80,12 @@ class _FeedWidgetState extends State<FeedWidget> {
                       isTitle: true,
                     ),
                   ),
-                  const Flexible(flex: 1, child: HeartButton()),
+                  Flexible(
+                      flex: 1,
+                      child: HeartButton(
+                        productId: productModel.id,
+                        isWishlist: _isInWishlist,
+                      )),
                 ],
               ),
             ),
@@ -103,7 +114,7 @@ class _FeedWidgetState extends State<FeedWidget> {
                             isTitle: true,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           width: 5,
                         ),
                         Flexible(
@@ -134,33 +145,35 @@ class _FeedWidgetState extends State<FeedWidget> {
                 ],
               ),
             ),
-            Spacer(),
+            const Spacer(),
             TextButton(
               onPressed: () {
-                cartProvider.addProductToCart(
-                    productId: productModel.id,
-                    quantity: int.parse(_quantityController.text));
+                _isInCart
+                    ? null
+                    : cartProvider.addProductToCart(
+                        productId: productModel.id,
+                        quantity: int.parse(_quantityController.text));
               },
-              child: SizedBox(
-                width: double.infinity,
-                child: TextWidget(
-                  text: 'Add to cart',
-                  maxLine: 1,
-                  color: color,
-                  textsize: 20,
-                ),
-              ),
               style: ButtonStyle(
                 backgroundColor:
                     MaterialStateProperty.all(Theme.of(context).canvasColor),
                 tapTargetSize: MaterialTapTargetSize.shrinkWrap,
                 shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
+                  const RoundedRectangleBorder(
                     borderRadius: BorderRadius.only(
                       bottomLeft: Radius.circular(12),
                       bottomRight: Radius.circular(12),
                     ),
                   ),
+                ),
+              ),
+              child: SizedBox(
+                width: double.infinity,
+                child: TextWidget(
+                  text: _isInCart ? 'In cart' : 'Add to cart',
+                  maxLine: 1,
+                  color: color,
+                  textsize: 20,
                 ),
               ),
             )

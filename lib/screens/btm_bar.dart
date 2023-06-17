@@ -7,6 +7,7 @@ import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:provider/provider.dart';
 import 'package:badges/badges.dart' as badge;
 
+import '../Prodivers/cart_prodiver.dart';
 import '../widgets/text_wiget.dart';
 import 'cart/cart_screen.dart';
 
@@ -59,20 +60,24 @@ class _BottomBarScreenState extends State<BottomBarScreen> {
                     : const Icon(IconlyLight.category),
                 label: 'Categories'),
             BottomNavigationBarItem(
-                icon: badge.Badge(
-                  badgeAnimation: const badge.BadgeAnimation.slide(),
-                  badgeStyle: badge.BadgeStyle(
-                    shape: badge.BadgeShape.circle,
-                    badgeColor: Colors.blue,
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  position: badge.BadgePosition.topEnd(top: -7, end: -7),
-                  badgeContent: FittedBox(
-                      child: TextWidget(
-                          text: "1", color: Colors.white, textsize: 15)),
-                  child: Icon(
-                      _selectedIndex == 2 ? IconlyBold.buy : IconlyLight.buy),
-                ),
+                icon: Consumer<CartProvider>(builder: (_, myCart, ch) {
+                  return badge.Badge(
+                    badgeAnimation: const badge.BadgeAnimation.slide(),
+                    badgeStyle: badge.BadgeStyle(
+                      shape: badge.BadgeShape.circle,
+                      badgeColor: Colors.blue,
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    position: badge.BadgePosition.topEnd(top: -7, end: -7),
+                    badgeContent: FittedBox(
+                        child: TextWidget(
+                            text: myCart.getCartItems.length.toString(),
+                            color: Colors.white,
+                            textsize: 15)),
+                    child: Icon(
+                        _selectedIndex == 2 ? IconlyBold.buy : IconlyLight.buy),
+                  );
+                }),
                 label: 'Cart'),
             BottomNavigationBarItem(
                 icon: Icon(

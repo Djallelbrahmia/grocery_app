@@ -8,6 +8,7 @@ import 'package:grocery_app/widgets/price_widget.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
+import '../Prodivers/wishlist_provider.dart';
 import '../models/product_model.dart';
 import '../services/utils.dart';
 
@@ -25,6 +26,10 @@ class _OnSaleWidgetState extends State<OnSaleWidget> {
     final productModel = Provider.of<ProductModel>(context);
     Color color = Utils(context).color;
     final cartProvider = Provider.of<CartProvider>(context);
+    bool? _isInCart = cartProvider.getCartItems.containsKey(productModel.id);
+    final wishlistProvider = Provider.of<WishlistProvider>(context);
+    bool? _isInWishlist =
+        wishlistProvider.getwishlistItems.containsKey(productModel.id);
     return Padding(
       padding: const EdgeInsets.all(8),
       child: Material(
@@ -69,12 +74,15 @@ class _OnSaleWidgetState extends State<OnSaleWidget> {
                                     productId: productModel.id, quantity: 1);
                               },
                               child: Icon(
-                                IconlyLight.bag2,
+                                _isInCart ? IconlyBold.bag2 : IconlyLight.bag2,
                                 size: 24,
-                                color: color,
+                                color: _isInCart ? Colors.green : color,
                               ),
                             ),
-                            const HeartButton(),
+                            HeartButton(
+                              productId: productModel.id,
+                              isWishlist: _isInWishlist,
+                            ),
                           ],
                         ),
                       ],
