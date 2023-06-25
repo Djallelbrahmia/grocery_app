@@ -17,48 +17,89 @@ class GlobalMethods {
       context: context,
       builder: (context) {
         return AlertDialog(
-            title: Row(
-              children: [
-                Image.asset(
-                  "assets/images/warning-sign.png",
-                  height: 24,
-                  width: 24,
-                  fit: BoxFit.fill,
-                ),
-                const SizedBox(
-                  width: 16,
-                ),
-                Text(title)
-              ],
-            ),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  if (Navigator.canPop(context)) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const TextWidget(
-                  text: "Cancel",
-                  color: Colors.cyan,
-                  textsize: 20,
-                ),
+          title: Row(
+            children: [
+              Image.asset(
+                "assets/images/warning-sign.png",
+                height: 24,
+                width: 24,
+                fit: BoxFit.fill,
               ),
-              TextButton(
-                onPressed: () {
-                  fct();
-                  if (Navigator.canPop(context)) {
-                    Navigator.of(context).pop();
-                  }
-                },
-                child: const TextWidget(
-                  text: "Yes",
-                  color: Colors.red,
-                  textsize: 20,
-                ),
+              const SizedBox(
+                width: 16,
               ),
+              Text(title)
             ],
-            content: Text(subtitle));
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const TextWidget(
+                text: "Cancel",
+                color: Colors.cyan,
+                textsize: 20,
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                fct();
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const TextWidget(
+                text: "Yes",
+                color: Colors.red,
+                textsize: 20,
+              ),
+            ),
+          ],
+          content: Text(subtitle),
+        );
+      },
+    );
+  }
+
+  static Future<void> ErrorDialog(
+      {required String subtitle, required BuildContext context}) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Row(
+            children: [
+              Image.asset(
+                "assets/images/warning-sign.png",
+                height: 24,
+                width: 24,
+                fit: BoxFit.fill,
+              ),
+              const SizedBox(
+                width: 16,
+              ),
+              const Text("An Error Occured")
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                if (Navigator.canPop(context)) {
+                  Navigator.of(context).pop();
+                }
+              },
+              child: const TextWidget(
+                text: "Ok",
+                color: Colors.cyan,
+                textsize: 20,
+              ),
+            ),
+          ],
+          content: Text(subtitle),
+        );
       },
     );
   }

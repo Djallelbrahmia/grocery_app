@@ -1,4 +1,5 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -11,6 +12,8 @@ import '../Prodivers/cart_prodiver.dart';
 import '../Prodivers/product_provider.dart';
 import '../Prodivers/viewd_product_provider.dart';
 import '../Prodivers/wishlist_provider.dart';
+import '../consts/firebase_consts.dart';
+import '../services/global_methodes.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
 import '../widgets/text_wiget.dart';
@@ -274,6 +277,14 @@ class _ProductScreenState extends State<ProductScreen> {
                             borderRadius: BorderRadius.circular(10),
                             child: InkWell(
                               onTap: () {
+                                final User? user = authInstance.currentUser;
+                                if (user == null) {
+                                  GlobalMethods.ErrorDialog(
+                                      subtitle:
+                                          "No user found ,You must log in first",
+                                      context: context);
+                                  return;
+                                }
                                 cartProvider.addProductToCart(
                                     productId: getCurrentProduct.id,
                                     quantity: int.parse(

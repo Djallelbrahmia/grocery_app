@@ -1,4 +1,5 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
@@ -9,7 +10,9 @@ import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
 import '../Prodivers/wishlist_provider.dart';
+import '../consts/firebase_consts.dart';
 import '../models/product_model.dart';
+import '../services/global_methodes.dart';
 import '../services/utils.dart';
 
 class OnSaleWidget extends StatefulWidget {
@@ -70,6 +73,14 @@ class _OnSaleWidgetState extends State<OnSaleWidget> {
                           children: [
                             GestureDetector(
                               onTap: () {
+                                final User? user = authInstance.currentUser;
+                                if (user == null) {
+                                  GlobalMethods.ErrorDialog(
+                                      subtitle:
+                                          "No user found ,You must log in first",
+                                      context: context);
+                                  return;
+                                }
                                 cartProvider.addProductToCart(
                                     productId: productModel.id, quantity: 1);
                               },

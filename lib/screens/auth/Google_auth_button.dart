@@ -1,16 +1,60 @@
+import 'dart:math';
+
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:grocery_app/consts/firebase_consts.dart';
+import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
+import 'dart:developer' as dev;
+import '../btm_bar.dart';
 
 class GoogleButton extends StatelessWidget {
-  const GoogleButton({super.key, this.buttonText = "Sign in with google"});
+  GoogleButton({super.key, this.buttonText = "Sign in with google"});
   final String buttonText;
+  Future<void> _googleSignIn(context) async {
+    dev.log("Hey");
+
+    final googleSignIn = GoogleSignIn();
+    dev.log("Again");
+    try {
+      final googleAccount = await googleSignIn.signIn();
+    } catch (e) {
+      dev.log(e.toString());
+    }
+    final googleAccount = await googleSignIn.signIn();
+
+    dev.log(googleAccount.toString());
+    if (googleAccount != null) {
+      final googleAuth = await googleAccount.authentication;
+      if (googleAuth.accessToken != null && googleAuth.idToken != null) {
+        try {
+          await authInstance.signInWithCredential(GoogleAuthProvider.credential(
+              idToken: googleAuth.idToken,
+              accessToken: googleAuth.accessToken));
+          Navigator.of(context).pushReplacement(
+            MaterialPageRoute(
+              builder: (context) => const BottomBarScreen(),
+            ),
+          );
+        } on FirebaseException catch (error) {
+          GlobalMethods.ErrorDialog(
+              subtitle: '${error.message}', context: context);
+        } catch (error) {
+          GlobalMethods.ErrorDialog(subtitle: '$error', context: context);
+        } finally {}
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Material(
       color: Colors.blue,
       child: InkWell(
-        onTap: () {},
+        onTap: () async {
+          await _googleSignIn(context);
+        },
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [

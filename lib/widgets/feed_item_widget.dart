@@ -1,4 +1,5 @@
 import 'package:fancy_shimmer_image/fancy_shimmer_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
@@ -10,6 +11,8 @@ import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 
 import '../Prodivers/wishlist_provider.dart';
+import '../consts/firebase_consts.dart';
+import '../services/global_methodes.dart';
 import '../services/utils.dart';
 
 class FeedWidget extends StatefulWidget {
@@ -148,6 +151,13 @@ class _FeedWidgetState extends State<FeedWidget> {
             const Spacer(),
             TextButton(
               onPressed: () {
+                final User? user = authInstance.currentUser;
+                if (user == null) {
+                  GlobalMethods.ErrorDialog(
+                      subtitle: "No user found ,You must log in first",
+                      context: context);
+                  return;
+                }
                 _isInCart
                     ? null
                     : cartProvider.addProductToCart(

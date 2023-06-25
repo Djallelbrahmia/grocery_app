@@ -54,7 +54,9 @@ class _ViewedSCreenState extends State<ViewedSCreen> {
                     GlobalMethods.WarningDialog(
                         title: "Delete",
                         subtitle: "Are you sure you wanna your  history ? ",
-                        fct: () {},
+                        fct: () {
+                          viewdProdProvider.clearHistory();
+                        },
                         context: context);
                   },
                   icon: Icon(

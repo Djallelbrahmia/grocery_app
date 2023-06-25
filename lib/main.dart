@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
@@ -48,52 +49,76 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
+  final _firebaseInitialization = Firebase.initializeApp();
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (_) {
-          return themeChangeProvider;
-        }),
-        ChangeNotifierProvider(create: (_) {
-          return ProductProvider();
-        }),
-        ChangeNotifierProvider(create: (_) {
-          return CartProvider();
-        }),
-        ChangeNotifierProvider(create: (_) {
-          return WishlistProvider();
-        }),
-        ChangeNotifierProvider(create: (_) {
-          return ViewdProdProvider();
-        })
-      ],
-      child: Consumer<DarkThemeProvider>(
-          builder: (context, themeChangeProvider, child) {
-        return MaterialApp(
-            debugShowCheckedModeBanner: false,
-            title: 'Flutter Demo',
-            theme: Styles.themeData(themeChangeProvider.getDarkTheme, context),
-            home: const BottomBarScreen(),
-            routes: {
-              OnsaleScreen.routeName: (context) {
-                return const OnsaleScreen();
-              },
-              FeedsScreen.routeName: (context) {
-                return const FeedsScreen();
-              },
-              ProductScreen.routeName: (context) => const ProductScreen(),
-              WishlistScreen.routeName: (context) => WishlistScreen(),
-              OrderScreen.routeName: (context) => const OrderScreen(),
-              ViewedSCreen.routeName: (context) => const ViewedSCreen(),
-              LoginScreen.routeName: (context) => const LoginScreen(),
-              RegistreScreen.routeName: (context) => const RegistreScreen(),
-              ForgetPasswordScreen.routeName: (context) =>
-                  const ForgetPasswordScreen(),
-              CategoryFeedsScreen.routeName: (context) =>
-                  const CategoryFeedsScreen(),
-            });
-      }),
-    );
+    return FutureBuilder(
+        future: _firebaseInitialization,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              ),
+            );
+          } else if (snapshot.hasError) {
+            return const MaterialApp(
+              home: Scaffold(
+                body: Center(
+                  child: Text("An Error occured"),
+                ),
+              ),
+            );
+          }
+          return MultiProvider(
+            providers: [
+              ChangeNotifierProvider(create: (_) {
+                return themeChangeProvider;
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return ProductProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return CartProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return WishlistProvider();
+              }),
+              ChangeNotifierProvider(create: (_) {
+                return ViewdProdProvider();
+              })
+            ],
+            child: Consumer<DarkThemeProvider>(
+                builder: (context, themeChangeProvider, child) {
+              return MaterialApp(
+                  debugShowCheckedModeBanner: false,
+                  title: 'Flutter Demo',
+                  theme: Styles.themeData(
+                      themeChangeProvider.getDarkTheme, context),
+                  home: const BottomBarScreen(),
+                  routes: {
+                    OnsaleScreen.routeName: (context) {
+                      return const OnsaleScreen();
+                    },
+                    FeedsScreen.routeName: (context) {
+                      return const FeedsScreen();
+                    },
+                    ProductScreen.routeName: (context) => const ProductScreen(),
+                    WishlistScreen.routeName: (context) => WishlistScreen(),
+                    OrderScreen.routeName: (context) => const OrderScreen(),
+                    ViewedSCreen.routeName: (context) => const ViewedSCreen(),
+                    LoginScreen.routeName: (context) => const LoginScreen(),
+                    RegistreScreen.routeName: (context) =>
+                        const RegistreScreen(),
+                    ForgetPasswordScreen.routeName: (context) =>
+                        const ForgetPasswordScreen(),
+                    CategoryFeedsScreen.routeName: (context) =>
+                        const CategoryFeedsScreen(),
+                  });
+            }),
+          );
+        });
   }
 }
