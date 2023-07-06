@@ -1,12 +1,19 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
+import 'package:grocery_app/Prodivers/orders_provider.dart';
 import 'package:grocery_app/screens/cart/cart_widget.dart';
 import 'package:grocery_app/widgets/empty_cart_screen.dart';
 import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
+import '../../Prodivers/product_provider.dart';
+import '../../consts/firebase_consts.dart';
 import '../../services/utils.dart';
 
 class CartScreen extends StatelessWidget {
@@ -27,6 +34,7 @@ class CartScreen extends StatelessWidget {
           )
         : Scaffold(
             appBar: AppBar(
+              automaticallyImplyLeading: false,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -44,8 +52,10 @@ class CartScreen extends StatelessWidget {
                     GlobalMethods.WarningDialog(
                         title: "Delete",
                         subtitle: "Are you sure you wanna empty your card",
-                        fct: () {
-                          cartProvider.clearCart();
+                        fct: () async {
+                          cartProvider.clearLocalCart();
+
+                          await cartProvider.clearOnlinecart();
                         },
                         context: context);
                   },
@@ -84,6 +94,16 @@ class CartScreen extends StatelessWidget {
   }
 
   Widget _checkout({required context}) {
+    final cartProvider = Provider.of<CartProvider>(context);
+    double total = 0.0;
+    final productProvider = Provider.of<ProductProvider>(context);
+    cartProvider.getCartItems.forEach((key, value) {
+      final getCurrentProduct = productProvider.findById(value.productId);
+      total += (getCurrentProduct.isOnSale
+              ? getCurrentProduct.salePrice
+              : getCurrentProduct.price) *
+          value.quantity;
+    });
     return SizedBox(
       child: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -96,18 +116,60 @@ class CartScreen extends StatelessWidget {
                 padding: const EdgeInsets.all(12.0),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(10),
-                  onTap: () {},
+                  onTap: () async {
+                    User? user = authInstance.currentUser;
+                    final productProvider =
+                        Provider.of<ProductProvider>(context, listen: false);
+                    final ordersProvider =
+                        Provider.of<OrderProvider>(context, listen: false);
+                    cartProvider.getCartItems.forEach((key, value) async {
+                      final orderId = const Uuid().v1();
+
+                      final getCurrProduct = productProvider.findById(
+                        value.productId,
+                      );
+                      try {
+                        await FirebaseFirestore.instance
+                            .collection('orders')
+                            .doc(orderId)
+                            .set({
+                          'orderId': orderId,
+                          'userId': user!.uid,
+                          'productId': value.productId,
+                          'price': (getCurrProduct.isOnSale
+                                  ? getCurrProduct.salePrice
+                                  : getCurrProduct.price) *
+                              value.quantity,
+                          'totalPrice': total,
+                          'quantity': value.quantity,
+                          'imageUrl': getCurrProduct.imageUrl,
+                          'userName': user.displayName,
+                          'orderDate': Timestamp.now(),
+                        });
+                      } catch (e) {
+                        GlobalMethods.ErrorDialog(
+                            subtitle: e.toString(), context: context);
+                      } finally {}
+                    });
+                    await ordersProvider.fetchOrders();
+                    await cartProvider.clearOnlinecart();
+                    cartProvider.clearLocalCart();
+                    await Fluttertoast.showToast(
+                        msg: "Your order has been placed ",
+                        toastLength: Toast.LENGTH_SHORT,
+                        gravity: ToastGravity.CENTER);
+                  },
                   child: const TextWidget(
                       text: "Order now", color: Colors.white, textsize: 20),
                 ),
               ),
             ),
             SizedBox(
-              width: Utils(context).screenSize.width * 0.3,
+              width: Utils(context).screenSize.width * 0.2,
             ),
             FittedBox(
               child: TextWidget(
-                text: "Total \$18",
+                text: " Total : \$${total.toStringAsFixed(2)}",
                 color: Utils(context).color,
                 textsize: 20,
                 isTitle: true,

@@ -9,6 +9,7 @@ import 'package:grocery_app/widgets/text_wiget.dart';
 
 import '../../consts/consts.dart';
 import '../../consts/firebase_consts.dart';
+import '../../fetch_screen.dart';
 import '../btm_bar.dart';
 import 'Google_auth_button.dart';
 import 'auth_button.dart';
@@ -59,7 +60,7 @@ class _LoginScreenState extends State<LoginScreen> {
         });
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const BottomBarScreen(),
+            builder: (context) => const FetchScreen(),
           ),
         );
       }
@@ -263,7 +264,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 fct: () {
                                   Navigator.of(context).push(
                                       MaterialPageRoute(builder: (context) {
-                                    return const BottomBarScreen();
+                                    return const FetchScreen();
                                   }));
                                 },
                                 buttonText: "Continue as guest ",

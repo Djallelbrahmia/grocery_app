@@ -72,7 +72,7 @@ class _OnSaleWidgetState extends State<OnSaleWidget> {
                         Row(
                           children: [
                             GestureDetector(
-                              onTap: () {
+                              onTap: () async {
                                 final User? user = authInstance.currentUser;
                                 if (user == null) {
                                   GlobalMethods.ErrorDialog(
@@ -81,8 +81,11 @@ class _OnSaleWidgetState extends State<OnSaleWidget> {
                                       context: context);
                                   return;
                                 }
-                                cartProvider.addProductToCart(
-                                    productId: productModel.id, quantity: 1);
+                                await GlobalMethods.addTocart(
+                                    productId: productModel.id,
+                                    quantity: 1,
+                                    context: context);
+                                await cartProvider.fetchCart();
                               },
                               child: Icon(
                                 _isInCart ? IconlyBold.bag2 : IconlyLight.bag2,

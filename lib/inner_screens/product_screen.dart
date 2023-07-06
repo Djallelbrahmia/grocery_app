@@ -112,43 +112,51 @@ class _ProductScreenState extends State<ProductScreen> {
                     ),
                   ),
                   Padding(
-                    padding:
-                        const EdgeInsets.only(top: 20, left: 30, right: 30),
+                    padding: const EdgeInsets.only(top: 20, left: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
-                        TextWidget(
-                          text:
-                              '${usedPrice}/ ${getCurrentProduct.isPiece ? "Piece" : "Kg"} ',
-                          color: Colors.green,
-                          textsize: 22,
-                          isTitle: true,
+                        Flexible(
+                          flex: 3,
+                          child: TextWidget(
+                            text:
+                                '${usedPrice}/ ${getCurrentProduct.isPiece ? "Piece" : "Kg"} ',
+                            color: Colors.green,
+                            textsize: 20,
+                            isTitle: true,
+                          ),
                         ),
                         const SizedBox(
                           width: 10,
                         ),
-                        Visibility(
-                            visible: getCurrentProduct.isOnSale,
-                            child: Text(
-                              getCurrentProduct.price.toStringAsFixed(2),
-                              style: TextStyle(
-                                  fontSize: 15,
-                                  color: color,
-                                  decoration: TextDecoration.lineThrough),
-                            )),
+                        Flexible(
+                          flex: 1,
+                          child: Visibility(
+                              visible: getCurrentProduct.isOnSale,
+                              child: Text(
+                                getCurrentProduct.price.toStringAsFixed(2),
+                                style: TextStyle(
+                                    fontSize: 10,
+                                    color: color,
+                                    decoration: TextDecoration.lineThrough),
+                              )),
+                        ),
                         const Spacer(),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 4, horizontal: 8),
-                          decoration: BoxDecoration(
-                              color: const Color.fromRGBO(63, 200, 101, 1),
-                              borderRadius: BorderRadius.circular(5)),
-                          child: const TextWidget(
-                            text: 'Free delivery',
-                            color: Colors.white,
-                            textsize: 20,
-                            isTitle: true,
+                        Flexible(
+                          flex: 2,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 4, horizontal: 8),
+                            decoration: BoxDecoration(
+                                color: const Color.fromRGBO(63, 200, 101, 1),
+                                borderRadius: BorderRadius.circular(5)),
+                            child: const TextWidget(
+                              text: 'Free delivery',
+                              color: Colors.white,
+                              textsize: 14,
+                              isTitle: true,
+                            ),
                           ),
                         ),
                       ],
@@ -276,7 +284,7 @@ class _ProductScreenState extends State<ProductScreen> {
                             color: Colors.green,
                             borderRadius: BorderRadius.circular(10),
                             child: InkWell(
-                              onTap: () {
+                              onTap: () async {
                                 final User? user = authInstance.currentUser;
                                 if (user == null) {
                                   GlobalMethods.ErrorDialog(
@@ -285,10 +293,12 @@ class _ProductScreenState extends State<ProductScreen> {
                                       context: context);
                                   return;
                                 }
-                                cartProvider.addProductToCart(
+                                await GlobalMethods.addTocart(
                                     productId: getCurrentProduct.id,
-                                    quantity: int.parse(
-                                        _quantityTextController.text));
+                                    quantity:
+                                        int.parse(_quantityTextController.text),
+                                    context: context);
+                                await cartProvider.fetchCart();
                               },
                               child: Padding(
                                   padding: const EdgeInsets.all(12.0),

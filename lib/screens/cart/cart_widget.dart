@@ -177,8 +177,11 @@ class _CartWidgetState extends State<CartWidget> {
                             height: 4,
                           ),
                           InkWell(
-                            onTap: () {
-                              cartProvider.removeOneItem(getCurrentProduct.id);
+                            onTap: () async {
+                              await cartProvider.removeOneItem(
+                                  productId: getCurrentProduct.id,
+                                  cartId: cartModel.id,
+                                  quantity: cartModel.quantity);
                             },
                             child: const Icon(
                               CupertinoIcons.cart_badge_minus,

@@ -150,7 +150,7 @@ class _FeedWidgetState extends State<FeedWidget> {
             ),
             const Spacer(),
             TextButton(
-              onPressed: () {
+              onPressed: () async {
                 final User? user = authInstance.currentUser;
                 if (user == null) {
                   GlobalMethods.ErrorDialog(
@@ -160,9 +160,11 @@ class _FeedWidgetState extends State<FeedWidget> {
                 }
                 _isInCart
                     ? null
-                    : cartProvider.addProductToCart(
+                    : await GlobalMethods.addTocart(
                         productId: productModel.id,
-                        quantity: int.parse(_quantityController.text));
+                        quantity: int.parse(_quantityController.text),
+                        context: context);
+                await cartProvider.fetchCart();
               },
               style: ButtonStyle(
                 backgroundColor:

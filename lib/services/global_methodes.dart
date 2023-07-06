@@ -1,5 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:grocery_app/Prodivers/wishlist_provider.dart';
+import 'package:grocery_app/consts/firebase_consts.dart';
 import 'package:grocery_app/inner_screens/on_sale_screen.dart';
+import 'package:provider/provider.dart';
+import 'package:uuid/uuid.dart';
 
 import '../widgets/text_wiget.dart';
 
@@ -102,5 +109,51 @@ class GlobalMethods {
         );
       },
     );
+  }
+
+  static Future<void> addTocart(
+      {required String productId,
+      required int quantity,
+      required BuildContext context}) async {
+    final User? user = authInstance.currentUser;
+    final _uid = user!.uid;
+    final cartId = Uuid().v1();
+    try {
+      FirebaseFirestore.instance.collection('users').doc(_uid).update({
+        'UserCart': FieldValue.arrayUnion([
+          {'cartId': cartId, 'productId': productId, 'quantity': quantity}
+        ])
+      });
+      await Fluttertoast.showToast(
+          msg: "Item has been added to your cart",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER);
+    } catch (e) {
+      ErrorDialog(subtitle: e.toString(), context: context);
+    }
+  }
+
+  static Future<void> addtoWishlist(
+      {required String productId, required BuildContext context}) async {
+    final wishListId = const Uuid().v1();
+    final User? user = authInstance.currentUser;
+    final _uid = user!.uid;
+
+    try {
+      FirebaseFirestore.instance.collection('users').doc(_uid).update({
+        'userWish': FieldValue.arrayUnion([
+          {
+            'wishlistid': wishListId,
+            'productId': productId,
+          }
+        ])
+      });
+      await Fluttertoast.showToast(
+          msg: "Item has been added to your wishlist",
+          toastLength: Toast.LENGTH_SHORT,
+          gravity: ToastGravity.CENTER);
+    } catch (e) {
+      ErrorDialog(subtitle: e.toString(), context: context);
+    }
   }
 }

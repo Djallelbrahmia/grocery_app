@@ -66,7 +66,7 @@ class ViewedWidget extends StatelessWidget {
             color: Colors.green,
             borderRadius: BorderRadius.circular(12),
             child: InkWell(
-              onTap: () {
+              onTap: () async {
                 final User? user = authInstance.currentUser;
                 if (user == null) {
                   GlobalMethods.ErrorDialog(
@@ -76,8 +76,11 @@ class ViewedWidget extends StatelessWidget {
                 }
                 _isInCart
                     ? null
-                    : cartProvider.addProductToCart(
-                        productId: getCurrentProduct.id, quantity: 1);
+                    : await GlobalMethods.addTocart(
+                        productId: getCurrentProduct.id,
+                        quantity: 1,
+                        context: context);
+                await cartProvider.fetchCart();
               },
               borderRadius: BorderRadius.circular(12),
               child: Padding(

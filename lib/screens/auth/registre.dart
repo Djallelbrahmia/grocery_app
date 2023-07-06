@@ -11,6 +11,7 @@ import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 
 import '../../consts/consts.dart';
+import '../../fetch_screen.dart';
 import '../btm_bar.dart';
 import 'Google_auth_button.dart';
 import 'auth_button.dart';
@@ -49,10 +50,11 @@ class _RegistreScreenState extends State<RegistreScreen> {
   void _submitFormOnRegistre() async {
     final isValid = _formKey.currentState!.validate();
     FocusScope.of(context).unfocus();
-    setState(() {
-      _isLoading = true;
-    });
+
     if (isValid) {
+      setState(() {
+        _isLoading = true;
+      });
       _formKey.currentState!.save();
       try {
         await authInstance.createUserWithEmailAndPassword(
@@ -69,6 +71,8 @@ class _RegistreScreenState extends State<RegistreScreen> {
           'UserCart': [],
           'CreatedDate': Timestamp.now()
         });
+        user.updateDisplayName(_nameTextController.text);
+        user.reload();
       } catch (e) {
         GlobalMethods.ErrorDialog(subtitle: e.toString(), context: context);
         setState(() {
@@ -80,7 +84,7 @@ class _RegistreScreenState extends State<RegistreScreen> {
         });
         Navigator.of(context).pushReplacement(
           MaterialPageRoute(
-            builder: (context) => const BottomBarScreen(),
+            builder: (context) => const FetchScreen(),
           ),
         );
       }

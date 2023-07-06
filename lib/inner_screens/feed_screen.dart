@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import '../consts/consts.dart';
 import '../services/utils.dart';
 import '../widgets/back_widget.dart';
+import '../widgets/empty_prod.dart';
 import '../widgets/feed_item_widget.dart';
 import '../widgets/on_sale_widget.dart';
 import '../widgets/text_wiget.dart';
@@ -23,6 +24,8 @@ class FeedsScreen extends StatefulWidget {
 class _FeedsScreenState extends State<FeedsScreen> {
   final TextEditingController _searchTextController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
+  List<ProductModel> searchResult = [];
+
   @override
   void dispose() {
     _searchTextController.dispose();
@@ -58,7 +61,9 @@ class _FeedsScreenState extends State<FeedsScreen> {
                     focusNode: _focusNode,
                     controller: _searchTextController,
                     onChanged: (value) {
-                      setState(() {});
+                      setState(() {
+                        searchResult = productProvider.searchQuery(value);
+                      });
                     },
                     decoration: InputDecoration(
                         focusedBorder: OutlineInputBorder(
@@ -91,21 +96,31 @@ class _FeedsScreenState extends State<FeedsScreen> {
                   ),
                 ),
               ),
-              GridView.count(
-                  crossAxisCount: 2,
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  childAspectRatio:
-                      utils.screenSize.width / (utils.screenSize.height * 0.59),
-                  children: List.generate(allProdcuts.length, (index) {
-                    return Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 0, horizontal: 2),
-                        child: SizedBox(
-                          child: ChangeNotifierProvider.value(
-                              value: allProdcuts[index], child: FeedWidget()),
-                        ));
-                  })),
+              _searchTextController.text.isNotEmpty && searchResult.isEmpty
+                  ? const EmptyProdWidget(
+                      text: "No Product Found , please try another keyword",
+                    )
+                  : GridView.count(
+                      crossAxisCount: 2,
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      childAspectRatio: utils.screenSize.width /
+                          (utils.screenSize.height * 0.59),
+                      children: List.generate(
+                          _searchTextController.text.isNotEmpty
+                              ? searchResult.length
+                              : allProdcuts.length, (index) {
+                        return Padding(
+                            padding: EdgeInsets.symmetric(
+                                vertical: 0, horizontal: 2),
+                            child: SizedBox(
+                              child: ChangeNotifierProvider.value(
+                                  value: _searchTextController.text.isNotEmpty
+                                      ? searchResult[index]
+                                      : allProdcuts[index],
+                                  child: FeedWidget()),
+                            ));
+                      })),
             ],
           ),
         ));

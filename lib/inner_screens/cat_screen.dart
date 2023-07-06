@@ -36,6 +36,8 @@ class _CategoryFeedsScreenState extends State<CategoryFeedsScreen> {
     final Utils utils = Utils(context);
     final productProvider = Provider.of<ProductProvider>(context);
     final categoryName = ModalRoute.of(context)!.settings.arguments as String;
+    List<ProductModel> searchResult = [];
+
     List<ProductModel> productByCat =
         productProvider.findByCategory(categoryName);
     return Scaffold(
@@ -63,7 +65,9 @@ class _CategoryFeedsScreenState extends State<CategoryFeedsScreen> {
                           focusNode: _focusNode,
                           controller: _searchTextController,
                           onChanged: (value) {
-                            setState(() {});
+                            setState(() {
+                              searchResult = productProvider.searchQuery(value);
+                            });
                           },
                           decoration: InputDecoration(
                               focusedBorder: OutlineInputBorder(
@@ -96,22 +100,34 @@ class _CategoryFeedsScreenState extends State<CategoryFeedsScreen> {
                         ),
                       ),
                     ),
-                    GridView.count(
-                        crossAxisCount: 2,
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        childAspectRatio: utils.screenSize.width /
-                            (utils.screenSize.height * 0.59),
-                        children: List.generate(productByCat.length, (index) {
-                          return Padding(
-                              padding: EdgeInsets.symmetric(
-                                  vertical: 0, horizontal: 2),
-                              child: SizedBox(
-                                child: ChangeNotifierProvider.value(
-                                    value: productByCat[index],
-                                    child: FeedWidget()),
-                              ));
-                        })),
+                    _searchTextController.text.isNotEmpty &&
+                            searchResult.isEmpty
+                        ? const EmptyProdWidget(
+                            text:
+                                "No Product Found , please try another keyword",
+                          )
+                        : GridView.count(
+                            crossAxisCount: 2,
+                            physics: const NeverScrollableScrollPhysics(),
+                            shrinkWrap: true,
+                            childAspectRatio: utils.screenSize.width /
+                                (utils.screenSize.height * 0.59),
+                            children: List.generate(
+                                _searchTextController.text.isNotEmpty
+                                    ? searchResult.length
+                                    : productByCat.length, (index) {
+                              return Padding(
+                                  padding: EdgeInsets.symmetric(
+                                      vertical: 0, horizontal: 2),
+                                  child: SizedBox(
+                                    child: ChangeNotifierProvider.value(
+                                        value: _searchTextController
+                                                .text.isNotEmpty
+                                            ? searchResult[index]
+                                            : productByCat[index],
+                                        child: FeedWidget()),
+                                  ));
+                            })),
                   ],
                 ),
               ));

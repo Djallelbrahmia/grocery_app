@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
 import 'package:grocery_app/services/utils.dart';
 import 'package:grocery_app/widgets/back_widget.dart';
+import 'package:provider/provider.dart';
 
+import '../../Prodivers/orders_provider.dart';
 import '../../services/global_methodes.dart';
 import '../../widgets/empty_cart_screen.dart';
 import '../../widgets/text_wiget.dart';
@@ -21,8 +23,9 @@ class _OrderScreenState extends State<OrderScreen> {
   @override
   Widget build(BuildContext context) {
     final Utils utils = Utils(context);
-    bool _isEmpty = false;
-    return _isEmpty
+    final orderProvider = Provider.of<OrderProvider>(context);
+    final orders = orderProvider.getOrders;
+    return orders.isEmpty
         ? const EmptyCartScreen(
             title: "You didn't order anything recently",
             subtitle: "Order Something and make me happy",
@@ -37,7 +40,7 @@ class _OrderScreenState extends State<OrderScreen> {
               title: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: TextWidget(
-                  text: "Orders history",
+                  text: "Orders history [${orders.length}]",
                   color: utils.color,
                   textsize: 22,
                   isTitle: true,
@@ -62,10 +65,11 @@ class _OrderScreenState extends State<OrderScreen> {
               ],
             ),
             body: ListView.separated(
-              itemCount: 10,
+              itemCount: orders.length,
               itemBuilder: (context, index) => Padding(
                 padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
-                child: OrderWidget(),
+                child: ChangeNotifierProvider.value(
+                    value: orders[index], child: const OrderWidget()),
               ),
               separatorBuilder: (context, index) => const Divider(),
             ),
