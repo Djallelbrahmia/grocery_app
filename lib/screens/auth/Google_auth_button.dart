@@ -1,5 +1,6 @@
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -29,12 +30,28 @@ class GoogleButton extends StatelessWidget {
       final googleAuth = await googleAccount.authentication;
       if (googleAuth.accessToken != null && googleAuth.idToken != null) {
         try {
-          await authInstance.signInWithCredential(GoogleAuthProvider.credential(
-              idToken: googleAuth.idToken,
-              accessToken: googleAuth.accessToken));
+          final authResults = await authInstance.signInWithCredential(
+              GoogleAuthProvider.credential(
+                  idToken: googleAuth.idToken,
+                  accessToken: googleAuth.accessToken));
+          if (authResults.additionalUserInfo!.isNewUser) {
+            await FirebaseFirestore.instance
+                .collection("users")
+                .doc(authResults.user!.uid)
+                .set({
+              'id': authResults.user!.uid,
+              'name': authResults.user!.displayName,
+              'adress': '',
+              'email': authResults.user!.email,
+              'userWish': [],
+              'UserCart': [],
+              'CreatedDate': Timestamp.now()
+            });
+          }
+
           Navigator.of(context).pushReplacement(
             MaterialPageRoute(
-              builder: (context) => const BottomBarScreen(),
+              builder: (context) => const FetchScreen(),
             ),
           );
         } on FirebaseException catch (error) {
