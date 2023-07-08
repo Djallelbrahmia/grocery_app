@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
 import 'package:grocery_app/Prodivers/orders_provider.dart';
 import 'package:grocery_app/Prodivers/product_provider.dart';
@@ -17,12 +20,17 @@ import 'package:grocery_app/screens/auth/registre.dart';
 import 'package:grocery_app/screens/orders/order_screen.dart';
 import 'package:grocery_app/screens/viewed/viewed_screen.dart';
 import 'package:grocery_app/screens/wishlist/wishlist_screen.dart';
+import 'package:grocery_app/services/global_methodes.dart';
 import 'package:provider/provider.dart';
 import 'consts/theme_data.dart';
 import 'fetch_screen.dart';
+import 'package:http/http.dart' as http;
 
-void main() {
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  Stripe.publishableKey =
+      "pk_live_51NRIf5GPzHDOrSuHIALf2X8XVkCj4zt5UkMSDWDTOOHXLsDZc4Ck89s6Ina8aYkfRo0YCLc7pSVOpzGVlN4Pn82q00uaxv1JJd";
+  await Stripe.instance.applySettings();
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
   ]).then((_) => runApp(const MyApp()));

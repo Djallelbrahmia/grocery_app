@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_iconly/flutter_iconly.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:grocery_app/Prodivers/cart_prodiver.dart';
 import 'package:grocery_app/Prodivers/orders_provider.dart';
@@ -11,7 +14,7 @@ import 'package:grocery_app/services/global_methodes.dart';
 import 'package:grocery_app/widgets/text_wiget.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:http/http.dart' as http;
 import '../../Prodivers/product_provider.dart';
 import '../../consts/firebase_consts.dart';
 import '../../services/utils.dart';
@@ -128,7 +131,12 @@ class CartScreen extends StatelessWidget {
                       final getCurrProduct = productProvider.findById(
                         value.productId,
                       );
+
                       try {
+                        await initPayment(
+                            email: user!.email ?? '',
+                            amount: total * 100,
+                            context: context);
                         await FirebaseFirestore.instance
                             .collection('orders')
                             .doc(orderId)
@@ -179,5 +187,35 @@ class CartScreen extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> initPayment(
+      {required String email,
+      required double amount,
+      required BuildContext context}) async {
+    try {
+      final response = await http.post(
+          Uri.parse(
+              "https://us-central1-groceryappproject-3973a.cloudfunctions.net/stripePaymentIntentRequest"),
+          body: {'email': email, 'amount': amount.toString()});
+      final jSonResponse = jsonDecode(response.body);
+      if (jSonResponse['success'] == false) {
+        GlobalMethods.ErrorDialog(
+            subtitle: jSonResponse['error'], context: context);
+        throw jSonResponse['error'];
+      }
+      await Stripe.instance.initPaymentSheet(
+          paymentSheetParameters: SetupPaymentSheetParameters(
+        paymentIntentClientSecret: jSonResponse['paymentIntent'],
+        merchantDisplayName: 'Grocery shop',
+        customerId: jSonResponse['customer'],
+        customerEphemeralKeySecret: jSonResponse['ephemeralKey'],
+      ));
+      await Stripe.instance.presentPaymentSheet();
+      ScaffoldMessenger.of(context)
+          .showSnackBar(const SnackBar(content: Text("Payment succes")));
+    } catch (e) {
+      throw e;
+    }
   }
 }
